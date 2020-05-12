@@ -38,7 +38,7 @@ namespace unzipMasterGUId
 
         private void extract_Click(object sender, EventArgs e)
         {
-            string path = txtPath.Text;
+            string path = @txtPath.Text;
             if (Directory.Exists(path)) //checks if the folder exists
             {
                 string[] fileEntries = Directory.GetFiles(path); //get all files in the folder
@@ -47,7 +47,8 @@ namespace unzipMasterGUId
                     try
                     {
                         //extract all the files into directories with the same name
-                        ZipFile.ExtractToDirectory(fileName,fileName.Replace(path,"").Replace(".zip","")); 
+                        ZipFile.ExtractToDirectory(fileName,fileName.Replace(".zip",""));
+                        File.Delete(fileName);///TODO make zip file deletion optional for the user
                     }
                     catch (Exception)
                     {
