@@ -21,5 +21,17 @@ namespace unzipMasterGUId
         {
 
         }
+
+        private void browseButton_Click(object sender, EventArgs e)
+        {
+            //opens file explorer
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog {Description= "Select target folder" })
+            {
+                if (fbd.ShowDialog()==DialogResult.OK) //folder has been selected
+                {
+                    txtPath.Text = fbd.SelectedPath;
+                }
+            }
+        }
     }
 }
