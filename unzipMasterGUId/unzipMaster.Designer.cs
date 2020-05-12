@@ -31,7 +31,8 @@
             this.browseButton = new System.Windows.Forms.Button();
             this.txtPath = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
+            this.extract = new System.Windows.Forms.Button();
+            this.messageLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // browseButton
@@ -60,21 +61,32 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Target folder:";
             // 
-            // button2
+            // extract
             // 
-            this.button2.Location = new System.Drawing.Point(129, 154);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 3;
-            this.button2.Text = "Extract all";
-            this.button2.UseVisualStyleBackColor = true;
+            this.extract.Location = new System.Drawing.Point(129, 154);
+            this.extract.Name = "extract";
+            this.extract.Size = new System.Drawing.Size(75, 23);
+            this.extract.TabIndex = 3;
+            this.extract.Text = "Extract all";
+            this.extract.UseVisualStyleBackColor = true;
+            this.extract.Click += new System.EventHandler(this.extract_Click);
+            // 
+            // messageLabel
+            // 
+            this.messageLabel.AutoSize = true;
+            this.messageLabel.ForeColor = System.Drawing.Color.Red;
+            this.messageLabel.Location = new System.Drawing.Point(146, 113);
+            this.messageLabel.Name = "messageLabel";
+            this.messageLabel.Size = new System.Drawing.Size(0, 13);
+            this.messageLabel.TabIndex = 4;
             // 
             // unzipMaster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(337, 223);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.messageLabel);
+            this.Controls.Add(this.extract);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtPath);
             this.Controls.Add(this.browseButton);
@@ -91,7 +103,8 @@
         private System.Windows.Forms.Button browseButton;
         private System.Windows.Forms.TextBox txtPath;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button extract;
+        private System.Windows.Forms.Label messageLabel;
     }
 }
 
