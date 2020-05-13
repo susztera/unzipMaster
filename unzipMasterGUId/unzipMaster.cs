@@ -51,40 +51,10 @@ namespace unzipMasterGUId
         {
             if (txtPath.Text != "" && targetPath.Text != "")
             {
-                string path = @txtPath.Text;
-                string target = @targetPath.Text;
-                if (Directory.Exists(path) && Directory.Exists(target)) //checks if the folders exist
-                {
-                    messageLabel.Text = "";
-                    this.UseWaitCursor = true;
-                    string[] fileEntries = Directory.GetFiles(path); //get all files in the folder
-                    foreach (string fileName in fileEntries)
-                    {
-                        try
-                        {
-                            //extract all the files into directories with the same name in the target directory
-                            if (sameFolder)
-                            {
-                                
-                                ZipFileWithProgress.ExtractToDirectory(fileName, fileName.Replace(".zip", ""), new BasicProgress<double>(p => messageLabel.Text = $"{p:P0} extracting complete" + p.ToString()));
-                            }
-                            else
-                            {
-                                ZipFileWithProgress.ExtractToDirectory(fileName, target + fileName.Replace(path, "").Replace(".zip", ""), new BasicProgress<double>(p => Console.WriteLine($"{p:P0} extracting complete")));
-                            }
-                           // File.Delete(fileName);///TODO make zip file deletion optional for the user
-                        }
-                        catch (Exception)
-                        {
-                            ///TODO make this work for other compression types
-                        }
-                    }
-                    this.UseWaitCursor = false;
-                }
-                else
-                {
-                    messageLabel.Text = "Folder does not exist!";
-                }
+                progressBar1.Maximum = 100;
+                progressBar1.Step = 1;
+                progressBar1.Value = 0;
+                backgroundWorker1.RunWorkerAsync();
             }
             else
             {
@@ -126,5 +96,43 @@ namespace unzipMasterGUId
             sw.Close();
         }
 
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            string path = @txtPath.Text;
+            string target = @targetPath.Text;
+            if (Directory.Exists(path) && Directory.Exists(target)) //checks if the folders exist
+            {
+                var backgroundWorker = sender as BackgroundWorker;
+                messageLabel.Text = "";
+                this.UseWaitCursor = true;
+                string[] fileEntries = Directory.GetFiles(path); //get all files in the folder
+                foreach (string fileName in fileEntries)
+                {
+                    try
+                    {
+                        //extract all the files into directories with the same name in the target directory
+                        if (sameFolder)
+                        {
+
+                            ZipFileWithProgress.ExtractToDirectory(fileName, fileName.Replace(".zip", ""), new BasicProgress<double>(p => messageLabel.Text = $"{p:P0} extracting complete" + p.ToString()));
+                        }
+                        else
+                        {
+                            ZipFileWithProgress.ExtractToDirectory(fileName, target + fileName.Replace(path, "").Replace(".zip", ""), new BasicProgress<double>(p => Console.WriteLine($"{p:P0} extracting complete")));
+                        }
+                        // File.Delete(fileName);///TODO make zip file deletion optional for the user
+                    }
+                    catch (Exception)
+                    {
+                        ///TODO make this work for other compression types
+                    }
+                }
+                this.UseWaitCursor = false;
+            }
+            else
+            {
+                messageLabel.Text = "Folder does not exist!";
+            }
+        }
     }
 }
