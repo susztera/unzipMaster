@@ -14,6 +14,7 @@ namespace unzipMasterGUId
 {
     public partial class unzipMaster : Form
     {
+
         bool sameFolder = false;
         public unzipMaster()
         {
@@ -49,62 +50,74 @@ namespace unzipMasterGUId
 
         private void extract_Click(object sender, EventArgs e)
         {
-            if (txtPath.Text != "" && targetPath.Text != "")
-            {
-                
-                string path = @txtPath.Text;
-                string target = @targetPath.Text;
-                UseWaitCursor = true;
-                Application.DoEvents();
-                if (Directory.Exists(path) && Directory.Exists(target)) //checks if the folders exist
+            
+                if (txtPath.Text != "" && targetPath.Text != "")
                 {
-                    string[] fileEntries = Directory.GetFiles(path); //get all files in the folder
-                    progressBar1.Maximum = fileEntries.Where(x => x.Skip(x.Length - 3).ToString() == "zip").ToArray().Length;
-                    progressBar1.Step = 1;
-                    progressBar1.Value = 0;
-                    progressBar1.Visible = true;
-                    foreach (string fileName in fileEntries)
-                    {
-                        try
-                        {
-                            //extract all the files into directories with the same name in the target directory
-                            if (sameFolder)
-                            {
-                                messageLabel.Text = $"Extracting {fileName.Replace(path, "")}...";
-                                ZipFile.ExtractToDirectory(fileName, fileName.Replace(".zip", ""));
-                                progressBar1.PerformStep();
-                            }
-                            else
-                            {
-                                messageLabel.Text = $"Extracting {fileName.Replace(path, "")}...";
-                                ZipFile.ExtractToDirectory(fileName, target + fileName.Replace(path, "").Replace(".zip", ""));
-                                progressBar1.PerformStep();
-                            }
-                            //File.Delete(fileName);
-                            ///TODO make zip file deletion optional for the user
-                        }
-                        catch (Exception)
-                        {
-                            //if they're not zips, do nothing
-                            ///TODO make this work for other compression types
-                        }
-                    }
-                    messageLabel.Text = "";
-                    UseWaitCursor = false;
+
+                    string path = @txtPath.Text;
+                    string target = @targetPath.Text;
+                    UseWaitCursor = true;
                     Application.DoEvents();
+                    if (Directory.Exists(path) && Directory.Exists(target)) //checks if the folders exist
+                    {
+                    List<string> myarguments = new List<string>();
+                    backgroundWorker1.DoWork += (obj, e1) => WorkerDoWork(path, target);
+                    backgroundWorker1.RunWorkerAsync(argument: myarguments) ;
+                            
+                    }
+                    else
+                    {
+                        messageLabel.Text = "Folder does not exist!";
+                    }
                 }
                 else
                 {
-                    messageLabel.Text = "Folder does not exist!";
+                    messageLabel.Text = "Please fill all required fields!";
+                }
+        }
+        private void WorkerDoWork(string path1, string target1)
+        {
+            string[] fileEntries = Directory.GetFiles(path1); //get all files in the folder
+            load load = new load();
+            load.Show();
+            load.progressBar1.Maximum = fileEntries.Where(y => y.Skip(y.Length - 3).ToString() == "zip").ToArray().Length;
+            load.progressBar1.Step = 1;
+            load.progressBar1.Value = 0;
+            load.progressBar1.Visible = true;
+            foreach (string fileName in fileEntries)
+            {
+                try
+                {
+                    //extract all the files into directories with the same name in the target directory
+                    if (sameFolder)
+                    {
+                        load.messageLabel.Text = $"Extracting {fileName.Replace(path1, "")}...";
+                        ZipFile.ExtractToDirectory(fileName, fileName.Replace(".zip", ""));
+                        load.progressBar1.PerformStep();
+                    }
+                    else
+                    {
+                        load.messageLabel.Text = $"Extracting {fileName.Replace(path1, "")}...";
+                        List<string> arguments = new List<string>();
+                        arguments.Add(target1); arguments.Add(path1); arguments.Add(fileName);
+                        ZipFile.ExtractToDirectory(fileName, target1 + fileName.Replace(path1, "").Replace(".zip", ""));
+                        load.progressBar1.PerformStep();
+                    }
+                    //File.Delete(fileName);
+                    ///TODO make zip file deletion optional for the user
+                }
+                catch (Exception)
+                {
+                    load.messageLabel.Text = "Itt a hiba ";
+                    //if they're not zips, do nothing
+                    ///TODO make this work for other compression types
                 }
             }
-            else
-            {
-                messageLabel.Text = "Please fill all required fields!";
-            }
+            UseWaitCursor = false;
+            Application.DoEvents();
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+            private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             sameFolder = !sameFolder;
             targetPath.Enabled = !targetPath.Enabled;
@@ -137,6 +150,11 @@ namespace unzipMasterGUId
             sw.WriteLine(txtPath.Text);
             sw.Write(targetPath.Text);
             sw.Close();
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+           
         }
     }
 }

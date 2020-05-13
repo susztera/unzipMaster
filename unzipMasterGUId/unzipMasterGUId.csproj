@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="load.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="load.Designer.cs">
+      <DependentUpon>load.cs</DependentUpon>
+    </Compile>
     <Compile Include="unzipMaster.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -55,6 +61,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="load.resx">
+      <DependentUpon>load.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="unzipMaster.resx">
       <DependentUpon>unzipMaster.cs</DependentUpon>
     </EmbeddedResource>

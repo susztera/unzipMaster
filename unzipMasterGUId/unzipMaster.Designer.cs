@@ -39,7 +39,7 @@
             this.targetBrowseButton = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.setDefault = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // browseButton
@@ -134,20 +134,15 @@
             this.setDefault.UseVisualStyleBackColor = true;
             this.setDefault.Click += new System.EventHandler(this.setDefault_Click);
             // 
-            // progressBar1
+            // backgroundWorker1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(15, 148);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(310, 23);
-            this.progressBar1.TabIndex = 8;
-            this.progressBar1.Visible = false;
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             // 
             // unzipMaster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(337, 271);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.setDefault);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.targetBrowseButton);
@@ -179,7 +174,7 @@
         private System.Windows.Forms.Button targetBrowseButton;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button setDefault;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 
