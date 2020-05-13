@@ -14,6 +14,7 @@ namespace unzipMasterGUId
 {
     public partial class unzipMaster : Form
     {
+        bool sameFolder = false;
         public unzipMaster()
         {
             InitializeComponent();
@@ -38,28 +39,68 @@ namespace unzipMasterGUId
 
         private void extract_Click(object sender, EventArgs e)
         {
-            string path = @txtPath.Text;
-            if (Directory.Exists(path)) //checks if the folder exists
+            if (txtPath.Text != "" && (targetPath.Text != "" || sameFolder))
             {
-                string[] fileEntries = Directory.GetFiles(path); //get all files in the folder
-                foreach (string fileName in fileEntries)
+                string path = @txtPath.Text;
+                string target = @targetPath.Text;
+                if (Directory.Exists(path) && Directory.Exists(target)) //checks if the folders exist
                 {
-                    try
+                    string[] fileEntries = Directory.GetFiles(path); //get all files in the folder
+                    foreach (string fileName in fileEntries)
                     {
-                        //extract all the files into directories with the same name
-                        ZipFile.ExtractToDirectory(fileName,fileName.Replace(".zip",""));
-                        File.Delete(fileName);///TODO make zip file deletion optional for the user
+                        try
+                        {
+                            //extract all the files into directories with the same name in the target directory
+                            if (sameFolder)
+                            {
+                                ZipFile.ExtractToDirectory(fileName, fileName.Replace(".zip", ""));
+                            }
+                            else if (target != "")
+                            {
+                                ZipFile.ExtractToDirectory(fileName, target + fileName.Replace(path, "").Replace(".zip", ""));
+                            }
+                            else
+                            {
+                                messageLabel.Text = "Please give a target folder!";
+                                break;
+                            }
+                            File.Delete(fileName);///TODO make zip file deletion optional for the user
+                        }
+                        catch (Exception)
+                        {
+                            //if they're not zips, do nothing
+                            ///TODO make this work for other compression types
+                        }
                     }
-                    catch (Exception)
-                    {
-                        //if they're not zips, do nothing
-                        ///TODO make this work for other compression types
-                    }
+                }
+                else
+                {
+                    messageLabel.Text = "Folder does not exist!";
                 }
             }
             else
             {
-                messageLabel.Text = "Folder does not exist!";
+                messageLabel.Text = "Please fill all required fields!";
+            }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            sameFolder = !sameFolder;
+            targetPath.Enabled = !targetPath.Enabled;
+            targetPath.Text = "";
+            targetBrowseButton.Enabled = !targetBrowseButton.Enabled;
+        }
+
+        private void targetBrowseButton_Click(object sender, EventArgs e)
+        {
+            //opens file explorer
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog { Description = "Select target folder" })
+            {
+                if (fbd.ShowDialog() == DialogResult.OK) //folder has been selected
+                {
+                    targetPath.Text = fbd.SelectedPath;
+                }
             }
         }
     }
