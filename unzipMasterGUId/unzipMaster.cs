@@ -78,12 +78,12 @@ namespace unzipMasterGUId
         private void WorkerDoWork(string path1, string target1)
         {
             string[] fileEntries = Directory.GetFiles(path1); //get all files in the folder
-            load load = new load();
+            /*load load = new load();
             load.Show();
             load.progressBar1.Maximum = fileEntries.Where(y => y.Skip(y.Length - 3).ToString() == "zip").ToArray().Length;
             load.progressBar1.Step = 1;
             load.progressBar1.Value = 0;
-            load.progressBar1.Visible = true;
+            load.progressBar1.Visible = true;*/
             foreach (string fileName in fileEntries)
             {
                 try
@@ -91,24 +91,22 @@ namespace unzipMasterGUId
                     //extract all the files into directories with the same name in the target directory
                     if (sameFolder)
                     {
-                        load.messageLabel.Text = $"Extracting {fileName.Replace(path1, "")}...";
+                        //load.messageLabel.Text = $"Extracting {fileName.Replace(path1, "")}...";
                         ZipFile.ExtractToDirectory(fileName, fileName.Replace(".zip", ""));
-                        load.progressBar1.PerformStep();
+                        //load.progressBar1.PerformStep();
                     }
                     else
                     {
-                        load.messageLabel.Text = $"Extracting {fileName.Replace(path1, "")}...";
-                        List<string> arguments = new List<string>();
-                        arguments.Add(target1); arguments.Add(path1); arguments.Add(fileName);
+                        //load.messageLabel.Text = $"Extracting {fileName.Replace(path1, "")}...";
                         ZipFile.ExtractToDirectory(fileName, target1 + fileName.Replace(path1, "").Replace(".zip", ""));
-                        load.progressBar1.PerformStep();
+                        //load.progressBar1.PerformStep();
                     }
                     //File.Delete(fileName);
                     ///TODO make zip file deletion optional for the user
                 }
                 catch (Exception)
                 {
-                    load.messageLabel.Text = "Itt a hiba ";
+                    //load.messageLabel.Text = "error ";
                     //if they're not zips, do nothing
                     ///TODO make this work for other compression types
                 }
