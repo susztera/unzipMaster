@@ -15,6 +15,7 @@ namespace unzipMasterGUId
     public partial class unzipMaster : Form
     {
         bool sameFolder = false;
+
         public unzipMaster()
         {
             InitializeComponent();
@@ -34,7 +35,6 @@ namespace unzipMasterGUId
                 catch { }
             }
         }
-
         private void browseButton_Click(object sender, EventArgs e)
         {
             //opens file explorer
@@ -55,6 +55,8 @@ namespace unzipMasterGUId
                 string target = @targetPath.Text;
                 if (Directory.Exists(path) && Directory.Exists(target)) //checks if the folders exist
                 {
+                    messageLabel.Text = "";
+                    this.UseWaitCursor = true;
                     string[] fileEntries = Directory.GetFiles(path); //get all files in the folder
                     foreach (string fileName in fileEntries)
                     {
@@ -63,25 +65,21 @@ namespace unzipMasterGUId
                             //extract all the files into directories with the same name in the target directory
                             if (sameFolder)
                             {
-                                ZipFile.ExtractToDirectory(fileName, fileName.Replace(".zip", ""));
-                            }
-                            else if (target != "")
-                            {
-                                ZipFile.ExtractToDirectory(fileName, target + fileName.Replace(path, "").Replace(".zip", ""));
+                                
+                                ZipFileWithProgress.ExtractToDirectory(fileName, fileName.Replace(".zip", ""), new BasicProgress<double>(p => messageLabel.Text = $"{p:P0} extracting complete" + p.ToString()));
                             }
                             else
                             {
-                                messageLabel.Text = "Please select a target folder!";
-                                break;
+                                ZipFileWithProgress.ExtractToDirectory(fileName, target + fileName.Replace(path, "").Replace(".zip", ""), new BasicProgress<double>(p => Console.WriteLine($"{p:P0} extracting complete")));
                             }
-                            File.Delete(fileName);///TODO make zip file deletion optional for the user
+                           // File.Delete(fileName);///TODO make zip file deletion optional for the user
                         }
                         catch (Exception)
                         {
-                            //if they're not zips, do nothing
                             ///TODO make this work for other compression types
                         }
                     }
+                    this.UseWaitCursor = false;
                 }
                 else
                 {
@@ -93,7 +91,6 @@ namespace unzipMasterGUId
                 messageLabel.Text = "Please fill all required fields!";
             }
         }
-
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             sameFolder = !sameFolder;
@@ -128,5 +125,6 @@ namespace unzipMasterGUId
             sw.Write(targetPath.Text);
             sw.Close();
         }
+
     }
 }
