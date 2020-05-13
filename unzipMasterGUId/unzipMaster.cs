@@ -51,11 +51,18 @@ namespace unzipMasterGUId
         {
             if (txtPath.Text != "" && targetPath.Text != "")
             {
+                
                 string path = @txtPath.Text;
                 string target = @targetPath.Text;
+                UseWaitCursor = true;
+                Application.DoEvents();
                 if (Directory.Exists(path) && Directory.Exists(target)) //checks if the folders exist
                 {
                     string[] fileEntries = Directory.GetFiles(path); //get all files in the folder
+                    progressBar1.Maximum = fileEntries.Where(x => x.Skip(x.Length - 3).ToString() == "zip").ToArray().Length;
+                    progressBar1.Step = 1;
+                    progressBar1.Value = 0;
+                    progressBar1.Visible = true;
                     foreach (string fileName in fileEntries)
                     {
                         try
@@ -63,18 +70,18 @@ namespace unzipMasterGUId
                             //extract all the files into directories with the same name in the target directory
                             if (sameFolder)
                             {
+                                messageLabel.Text = $"Extracting {fileName.Replace(path, "")}...";
                                 ZipFile.ExtractToDirectory(fileName, fileName.Replace(".zip", ""));
-                            }
-                            else if (target != "")
-                            {
-                                ZipFile.ExtractToDirectory(fileName, target + fileName.Replace(path, "").Replace(".zip", ""));
+                                progressBar1.PerformStep();
                             }
                             else
                             {
-                                messageLabel.Text = "Please select a target folder!";
-                                break;
+                                messageLabel.Text = $"Extracting {fileName.Replace(path, "")}...";
+                                ZipFile.ExtractToDirectory(fileName, target + fileName.Replace(path, "").Replace(".zip", ""));
+                                progressBar1.PerformStep();
                             }
-                            File.Delete(fileName);///TODO make zip file deletion optional for the user
+                            //File.Delete(fileName);
+                            ///TODO make zip file deletion optional for the user
                         }
                         catch (Exception)
                         {
@@ -82,6 +89,9 @@ namespace unzipMasterGUId
                             ///TODO make this work for other compression types
                         }
                     }
+                    messageLabel.Text = "";
+                    UseWaitCursor = false;
+                    Application.DoEvents();
                 }
                 else
                 {
