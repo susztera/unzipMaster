@@ -22,7 +22,17 @@ namespace unzipMasterGUId
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            this.MaximumSize = this.Size;
+            if (File.Exists("defaults.txt"))
+            {
+                string[] def = File.ReadAllLines("defaults.txt");
+                try
+                {
+                    txtPath.Text = def[0];
+                    targetPath.Text = def[1];
+                }
+                catch { }
+            }
         }
 
         private void browseButton_Click(object sender, EventArgs e)
@@ -39,7 +49,7 @@ namespace unzipMasterGUId
 
         private void extract_Click(object sender, EventArgs e)
         {
-            if (txtPath.Text != "" && (targetPath.Text != "" || sameFolder))
+            if (txtPath.Text != "" && targetPath.Text != "")
             {
                 string path = @txtPath.Text;
                 string target = @targetPath.Text;
@@ -61,7 +71,7 @@ namespace unzipMasterGUId
                             }
                             else
                             {
-                                messageLabel.Text = "Please give a target folder!";
+                                messageLabel.Text = "Please select a target folder!";
                                 break;
                             }
                             File.Delete(fileName);///TODO make zip file deletion optional for the user
@@ -88,8 +98,15 @@ namespace unzipMasterGUId
         {
             sameFolder = !sameFolder;
             targetPath.Enabled = !targetPath.Enabled;
-            targetPath.Text = "";
             targetBrowseButton.Enabled = !targetBrowseButton.Enabled;
+            if (sameFolder)
+            {
+                targetPath.Text = txtPath.Text;
+            }
+            else
+            {
+                targetPath.Text = "";
+            }
         }
 
         private void targetBrowseButton_Click(object sender, EventArgs e)
@@ -102,6 +119,14 @@ namespace unzipMasterGUId
                     targetPath.Text = fbd.SelectedPath;
                 }
             }
+        }
+
+        private void setDefault_Click(object sender, EventArgs e)
+        {
+            StreamWriter sw = new StreamWriter("defaults.txt");
+            sw.WriteLine(txtPath.Text);
+            sw.Write(targetPath.Text);
+            sw.Close();
         }
     }
 }

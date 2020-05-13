@@ -38,6 +38,7 @@
             this.targetPath = new System.Windows.Forms.TextBox();
             this.targetBrowseButton = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.setDefault = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // browseButton
@@ -68,7 +69,7 @@
             // 
             // extract
             // 
-            this.extract.Location = new System.Drawing.Point(131, 160);
+            this.extract.Location = new System.Drawing.Point(131, 151);
             this.extract.Name = "extract";
             this.extract.Size = new System.Drawing.Size(75, 23);
             this.extract.TabIndex = 6;
@@ -122,11 +123,22 @@
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // setDefault
+            // 
+            this.setDefault.Location = new System.Drawing.Point(131, 189);
+            this.setDefault.Name = "setDefault";
+            this.setDefault.Size = new System.Drawing.Size(75, 23);
+            this.setDefault.TabIndex = 7;
+            this.setDefault.Text = "Set defaults";
+            this.setDefault.UseVisualStyleBackColor = true;
+            this.setDefault.Click += new System.EventHandler(this.setDefault_Click);
+            // 
             // unzipMaster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(337, 223);
+            this.ClientSize = new System.Drawing.Size(337, 240);
+            this.Controls.Add(this.setDefault);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.targetBrowseButton);
             this.Controls.Add(this.targetPath);
@@ -156,6 +168,7 @@
         private System.Windows.Forms.TextBox targetPath;
         private System.Windows.Forms.Button targetBrowseButton;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button setDefault;
     }
 }
 
