@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO.Compression;
+using System.Windows.Forms;
+using System.Linq;
 
 namespace unzipMasterGUId
 {
@@ -34,56 +30,89 @@ namespace unzipMasterGUId
                 }
                 catch { }
             }
+            txtPath.TextChanged += (obje, eh) => txtPath_TextChanged();
+        }
+
+        private void extract_Click(object sender, EventArgs e)
+        {
+
+            if (txtPath.Text != "" && targetPath.Text != "")
+            {
+
+                string path = @txtPath.Text;
+                string target = @targetPath.Text;
+                UseWaitCursor = true;
+                Application.DoEvents();
+                extract.Enabled = false;
+                if (Directory.Exists(path) && Directory.Exists(target)) //checks if the folders exist
+                {
+                    List<object> arguments = new List<object>();
+                    arguments.Add(path);
+                    arguments.Add(target);
+                    backgroundWorker1.RunWorkerAsync(arguments);
+                    //backgroundWorker2.RunWorkerAsync(arguments);
+                }
+                else
+                {
+                    messageLabel.Text = "Folder does not exist!";
+                }
+                extract.Enabled = true;
+            }
+            else
+            {
+                messageLabel.Text = "Please fill all required fields!";
+            }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            sameFolder = !sameFolder;
+            targetPath.Enabled = !targetPath.Enabled;
+            targetBrowseButton.Enabled = !targetBrowseButton.Enabled;
+            if (sameFolder)
+            {
+                targetPath.Text = txtPath.Text;
+            }
         }
 
         private void browseButton_Click(object sender, EventArgs e)
         {
             //opens file explorer
-            using (FolderBrowserDialog fbd = new FolderBrowserDialog {Description= "Select target folder" })
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog { Description = "Select target folder" })
             {
-                if (fbd.ShowDialog()==DialogResult.OK) //folder has been selected
+                if (fbd.ShowDialog() == DialogResult.OK) //folder has been selected
                 {
                     txtPath.Text = fbd.SelectedPath;
                 }
             }
         }
 
-        private void extract_Click(object sender, EventArgs e)
+        private void targetBrowseButton_Click(object sender, EventArgs e)
         {
-            
-                if (txtPath.Text != "" && targetPath.Text != "")
+            //opens file explorer
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog { Description = "Select target folder" })
+            {
+                if (fbd.ShowDialog() == DialogResult.OK) //folder has been selected
                 {
-
-                    string path = @txtPath.Text;
-                    string target = @targetPath.Text;
-                    UseWaitCursor = true;
-                    Application.DoEvents();
-                    if (Directory.Exists(path) && Directory.Exists(target)) //checks if the folders exist
-                    {
-                    List<string> myarguments = new List<string>();
-                    backgroundWorker1.DoWork += (obj, e1) => WorkerDoWork(path, target);
-                    backgroundWorker1.RunWorkerAsync(argument: myarguments) ;
-                            
-                    }
-                    else
-                    {
-                        messageLabel.Text = "Folder does not exist!";
-                    }
+                    targetPath.Text = fbd.SelectedPath;
                 }
-                else
-                {
-                    messageLabel.Text = "Please fill all required fields!";
-                }
+            }
         }
-        private void WorkerDoWork(string path1, string target1)
+
+        private void setDefault_Click(object sender, EventArgs e)
         {
+            StreamWriter sw = new StreamWriter("defaults.txt");
+            sw.WriteLine(txtPath.Text);
+            sw.Write(targetPath.Text);
+            sw.Close();
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            List<object> genericlist = e.Argument as List<object>;
+            string path1 = (string)genericlist[0];
+            string target1 = (string)genericlist[1];
             string[] fileEntries = Directory.GetFiles(path1); //get all files in the folder
-            /*load load = new load();
-            load.Show();
-            load.progressBar1.Maximum = fileEntries.Where(y => y.Skip(y.Length - 3).ToString() == "zip").ToArray().Length;
-            load.progressBar1.Step = 1;
-            load.progressBar1.Value = 0;
-            load.progressBar1.Visible = true;*/
             foreach (string fileName in fileEntries)
             {
                 try
@@ -115,44 +144,32 @@ namespace unzipMasterGUId
             Application.DoEvents();
         }
 
-            private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void txtPath_TextChanged()
         {
-            sameFolder = !sameFolder;
-            targetPath.Enabled = !targetPath.Enabled;
-            targetBrowseButton.Enabled = !targetBrowseButton.Enabled;
             if (sameFolder)
             {
                 targetPath.Text = txtPath.Text;
             }
-            else
+        }
+
+        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        {
+            List<object> genericlist = e.Argument as List<object>;
+            string path1 = (string)genericlist[0];
+            string target1 = (string)genericlist[1];
+            string[] zipFileEntries = Directory.GetFiles(path1).Where(y => Path.GetExtension(y) == ".zip").ToArray(); //get all files in the folder
+            
+            load load = new load();
+            load.Show();
+            load.progressBar1.Maximum = zipFileEntries.Length;
+            load.progressBar1.Step = 1;
+            load.progressBar1.Value = 0;
+            load.progressBar1.Visible = true;
+            while (backgroundWorker1.IsBusy)
             {
-                targetPath.Text = "";
+                //load.messageLabel.Text = $"Extracting { Directory.GetDirectories(path1).Where(x => zipFileEntries.Contains(x)).Last().Replace(path1,"")}...";
+                load.progressBar1.Value = Directory.GetDirectories(path1).Where(x => zipFileEntries.Contains(x)).ToArray().Length;
             }
-        }
-
-        private void targetBrowseButton_Click(object sender, EventArgs e)
-        {
-            //opens file explorer
-            using (FolderBrowserDialog fbd = new FolderBrowserDialog { Description = "Select target folder" })
-            {
-                if (fbd.ShowDialog() == DialogResult.OK) //folder has been selected
-                {
-                    targetPath.Text = fbd.SelectedPath;
-                }
-            }
-        }
-
-        private void setDefault_Click(object sender, EventArgs e)
-        {
-            StreamWriter sw = new StreamWriter("defaults.txt");
-            sw.WriteLine(txtPath.Text);
-            sw.Write(targetPath.Text);
-            sw.Close();
-        }
-
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        {
-           
         }
     }
 }

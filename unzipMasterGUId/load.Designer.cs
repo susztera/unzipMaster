@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(load));
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.messageLabel = new System.Windows.Forms.Label();
+            this.progressBar2 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // progressBar1
@@ -45,19 +47,29 @@
             this.messageLabel.AutoSize = true;
             this.messageLabel.Location = new System.Drawing.Point(27, 13);
             this.messageLabel.Name = "messageLabel";
-            this.messageLabel.Size = new System.Drawing.Size(35, 13);
+            this.messageLabel.Size = new System.Drawing.Size(0, 13);
             this.messageLabel.TabIndex = 10;
-            this.messageLabel.Text = "label1";
+            // 
+            // progressBar2
+            // 
+            this.progressBar2.Location = new System.Drawing.Point(18, 85);
+            this.progressBar2.Name = "progressBar2";
+            this.progressBar2.Size = new System.Drawing.Size(310, 23);
+            this.progressBar2.TabIndex = 11;
+            this.progressBar2.Visible = false;
             // 
             // load
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(347, 108);
+            this.ClientSize = new System.Drawing.Size(347, 138);
+            this.Controls.Add(this.progressBar2);
             this.Controls.Add(this.messageLabel);
             this.Controls.Add(this.progressBar1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "load";
-            this.Text = "load";
+            this.Text = "Loading...";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -67,5 +79,6 @@
 
         public System.Windows.Forms.ProgressBar progressBar1;
         public System.Windows.Forms.Label messageLabel;
+        public System.Windows.Forms.ProgressBar progressBar2;
     }
 }

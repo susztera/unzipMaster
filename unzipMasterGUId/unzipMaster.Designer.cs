@@ -40,6 +40,7 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.setDefault = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // browseButton
@@ -138,6 +139,10 @@
             // 
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             // 
+            // backgroundWorker2
+            // 
+            this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker2_DoWork);
+            // 
             // unzipMaster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -153,6 +158,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtPath);
             this.Controls.Add(this.browseButton);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "unzipMaster";
             this.Text = "Unzip Master";
@@ -175,6 +181,7 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button setDefault;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker2;
     }
 }
 
